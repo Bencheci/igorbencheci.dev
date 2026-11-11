@@ -42,7 +42,7 @@ export const PROFILE = {
         'Built MiGente.World for J Balvin\'s "Mi Gente": an interactive globe of 431K+ fan posts from 134 countries and an FFmpeg microservice that framed fans\' selfies. Shorty Awards finalist in three categories.',
         'Built the Mountain Dew DEWnited States promotion site with in-browser label scanning (Amazon Rekognition, Google Cloud Vision, tracking.js), the agency\'s first image-recognition build.',
         'Worked on Sprint Trainer Rewards, a national Pokémon GO rewards platform (Shorty Award winner), and built its 2018 World Cup spin-off with live scores and gift card redemption.',
-        'Built "Machika", a web AR experience for J Balvin, and floor plan management tools for real estate developers.',
+        'Built "Machika", a web AR experience for J Balvin, floor plan management tools for real estate developers, and the Alta Midtown Phoenix site for Wood Partners (three Communicator Awards of Excellence, 2017).',
       ],
     },
     {
