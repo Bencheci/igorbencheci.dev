@@ -2,7 +2,7 @@
 // src/content.config.ts is the one place to swap in a Strapi loader later.
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
+import sitemap from './src/integrations/sitemap.mjs';
 import linkTitles from './src/integrations/link-titles.mjs';
 
 export default defineConfig({

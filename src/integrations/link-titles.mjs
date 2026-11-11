@@ -18,7 +18,7 @@ const FIXED = {
   '/rss.xml': `${OWNER} · Blog RSS feed`,
   '/resume.json': `${OWNER} · Resume in JSON Resume format`,
   '/llms.txt': `${OWNER} · Profile for AI assistants (llms.txt)`,
-  '/sitemap-index.xml': `${OWNER} · Sitemap`,
+  '/sitemap.xml': `${OWNER} · Sitemap`,
 };
 
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&#x27;/g, "'");
