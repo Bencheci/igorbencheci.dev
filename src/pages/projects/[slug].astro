@@ -1,0 +1,91 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Split from '../../components/Split.astro';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return projects.map((p, i) => ({ params: { slug: p.id }, props: { project: p, next: projects[(i + 1) % projects.length] } }));
+}
+const { project, next } = Astro.props;
+const d = project.data;
+const { Content } = await render(project);
+// `video` is a YouTube id, or `vimeo:<id>` / `vimeo:<id>/<hash>` (unlisted) for Vimeo.
+const [vimeo, vhash] = d.video?.startsWith('vimeo:') ? d.video.slice(6).split('/') : [];
+const embed = d.video ? (vimeo ? `https://player.vimeo.com/video/${vimeo}?dnt=1${vhash ? `&h=${vhash}` : ''}` : `https://www.youtube-nocookie.com/embed/${d.video}`) : undefined;
+const url = new URL(`/projects/${project.id}/`, Astro.site).toString();
+// Links with a `group` (one app in several stores) render one line per group.
+const linkGroups = Object.entries(Object.groupBy(d.links.filter((l) => l.group), (l) => l.group!)) as [string, typeof d.links][];
+const schema = [
+  {
+    '@type': d.category.includes('Mobile') ? 'SoftwareApplication' : 'CreativeWork',
+    '@id': `${url}#work`, name: d.title, headline: d.title, description: d.summary, abstract: d.summary, url,
+    image: new URL(`/og/projects/${project.id}.png`, Astro.site).toString(),
+    creator: { '@id': `${Astro.site}#igor` }, author: { '@id': `${Astro.site}#igor` },
+    ...(d.kind === 'work' ? { sourceOrganization: { '@type': 'Organization', name: 'Venture Tech Solutions' } } : {}),
+    ...(d.kind === 'earlier' ? { sourceOrganization: { '@type': 'Organization', name: 'Razz Interactive' } } : {}),
+    ...(d.award ? { award: d.award } : {}),
+    ...(embed ? { video: { '@type': 'VideoObject', name: d.videoLabel ?? `${d.title}, case video`, embedUrl: embed, ...(vimeo ? {} : { thumbnailUrl: `https://i.ytimg.com/vi/${d.video}/hqdefault.jpg` }) } } : {}),
+    temporalCoverage: d.period.replace(/\s*–\s*/, '/').replace('ongoing', '..'),
+    genre: d.industry, about: d.category.map((c) => ({ '@type': 'Thing', name: c })),
+    keywords: [...d.stack, ...d.category, d.industry].join(', '),
+    ...(d.category.includes('Mobile') ? { applicationCategory: 'FinanceApplication', operatingSystem: 'iOS, Android' } : {}),
+    ...(d.links.length ? { sameAs: d.links.map((l) => l.href) } : {}),
+    ...(d.metrics.length ? { additionalProperty: d.metrics.map((m) => ({ '@type': 'PropertyValue', name: m.label, value: m.value })) } : {}),
+    contributor: { '@type': 'Role', roleName: d.role, contributor: { '@id': `${Astro.site}#igor` } },
+  },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Work', item: new URL('/projects/', Astro.site).toString() },
+    { '@type': 'ListItem', position: 2, name: d.title, item: url },
+  ] },
+];
+---
+<Base title={d.seoTitle ?? d.title} description={d.seoDescription ?? d.summary} type="article" og={`projects/${project.id}`} schema={schema}>
+  <div class="read-progress" aria-hidden="true"></div>
+  <article class="wrap article">
+    <p class="eyebrow">{d.period} · {d.industry}</p>
+    <h1 class="fade-up" style="max-width:20ch"><Split text={d.title} /></h1>
+    <p class="lead" data-reveal>{d.summary}</p>
+    {d.metrics.length > 0 && (
+      <ul class="stats" data-reveal style="margin-top:2.5rem">{d.metrics.map((m) => <li><strong class="grad">{m.value}</strong><span>{m.label}</span></li>)}</ul>
+    )}
+    <dl class="facts" data-reveal>
+      <div><dt>Role</dt><dd>{d.role}</dd></div>
+      {d.kind === 'earlier' && <div><dt>Agency</dt><dd>Razz Interactive</dd></div>}
+      {d.award && <div><dt>Recognition</dt><dd>{d.award}</dd></div>}
+      <div><dt>Stack</dt><dd>{d.stack.join(' · ')}</dd></div>
+      {d.links.length > 0 && !d.links.some((l) => l.group) && <div><dt>Live</dt><dd>{d.links.map((l, i) => <>{i > 0 && ' · '}<a href={l.href} rel="noopener">{l.label}</a></>)}</dd></div>}
+      {linkGroups.length > 0 && <div><dt>Live</dt><dd>{linkGroups.map(([group, links]) => (
+        <span class="link-group"><span class="link-group-name">{group}</span>{links.map((l, i) => <>{i > 0 && ' · '}<a href={l.href} rel="noopener" title={`${group} on ${l.label.replace(/^App Store$/, "the App Store")}`}>{l.label}</a></>)}</span>
+      ))}</dd></div>}
+    </dl>
+    <div class="body prose" data-reveal><Content /></div>
+    {d.images.length > 0 && (
+      <div class="shots" data-reveal>{d.images.map((im) => <img src={im.src} alt={im.alt} width="1200" height="675" loading="lazy" decoding="async" />)}</div>
+    )}
+    {d.video && (
+      <figure class="video" data-reveal>
+        <iframe src={embed} title={d.videoLabel ?? `${d.title}, case video`} loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        <figcaption>{d.videoLabel ?? 'Case video from the award entry'}</figcaption>
+      </figure>
+    )}
+    <aside class="cta" data-reveal>
+      <p class="eyebrow">Next project</p>
+      <h2><a href={`/projects/${next.id}/`} style="text-decoration:none">{next.data.title} <span class="grad" aria-hidden="true">→</span></a></h2>
+      <p class="lead">{next.data.summary}</p>
+    </aside>
+    <a class="back" href="/projects/">← All work</a>
+  </article>
+</Base>
+
+<style>
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem; }
+  .shots img:first-child, .shots img:nth-child(2):last-child { grid-column: 1 / -1; }
+  @media (max-width: 600px) { .shots { grid-template-columns: 1fr; } }
+  .shots img, .video iframe { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: var(--radius); border: 1px solid var(--border); }
+  .video { margin: 2.5rem 0 0; }
+  .video figcaption { margin-top: .6rem; font-size: .85rem; color: var(--muted); }
+  .link-group { display: block; }
+  .link-group + .link-group { margin-top: .6rem; }
+  .link-group-name { display: block; color: var(--muted, inherit); font-size: .85em; }
+</style>

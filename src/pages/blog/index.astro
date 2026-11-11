@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Split from '../../components/Split.astro';
+const posts = (await getCollection('blog', (p) => !p.data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<Base title="Blog" og="blog" pageType="CollectionPage" description="Notes on headless CMS migrations, web performance, Flutter apps, payments and building with AI agents.">
+  <div class="wrap article">
+    <p class="eyebrow">Blog</p>
+    <h1 class="fade-up"><Split text="Notes from the work" /></h1>
+    <p class="lead" data-reveal>Migrations, page speed, mobile, payments and building with AI agents. Subscribe via <a href="/rss.xml">RSS</a>.</p>
+    <ul class="post-list" data-reveal style="margin-top:3rem">
+      {posts.map((p) => (
+        <li>
+          <time datetime={p.data.pubDate.toISOString()}>{p.data.pubDate.toLocaleDateString('en-US', { dateStyle: 'medium', timeZone: 'UTC' })}</time>
+          <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+          <p>{p.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

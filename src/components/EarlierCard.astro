@@ -1,0 +1,24 @@
+---
+/** Compact tile for earlier agency work: one image, year, title, award line. */
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; index?: number; }
+const { project, index = 0 } = Astro.props;
+const d = project.data;
+const img = d.images[0]
+  ? { src: d.images[0].src.replace(/\.webp$/, '-640.webp'), alt: d.images[0].alt }
+  : d.video && !d.video.startsWith('vimeo:') ? { src: `https://i.ytimg.com/vi/${d.video}/hqdefault.jpg`, alt: `${d.title}, case video still` } : undefined;
+---
+<li data-category={d.category.join('|')} data-reveal style={`--d:${index % 3}`}>
+  <article class="card ecard">
+    {img && <img src={img.src} alt={img.alt} width="640" height="360" loading="lazy" decoding="async" />}
+    <span class="num">{d.period} · {d.industry}</span>
+    <h3><a href={`/projects/${project.id}/`}>{d.cardTitle ?? d.title.split(',')[0]}</a></h3>
+    <p class="award">{d.cardLine ?? d.award ?? d.summary}</p>
+  </article>
+</li>
+<style>
+  .ecard { padding-top: 0; overflow: hidden; min-height: 0; }
+  .ecard img { display: block; width: calc(100% + 2 * var(--pad, 1.6rem)); max-width: none; margin: 0 calc(-1 * var(--pad, 1.6rem)) 1.1rem; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: left center; border-bottom: 1px solid var(--border); }
+  .ecard h3 { font-size: clamp(1.15rem, 1.6vw, 1.35rem); }
+  .ecard .award { color: var(--accent-text); font-size: .92rem; }
+</style>

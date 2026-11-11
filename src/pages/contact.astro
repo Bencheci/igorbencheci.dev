@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Split from '../components/Split.astro';
+import { SITE } from '../site';
+const links = [
+  { label: 'Email', value: SITE.email, href: `mailto:${SITE.email}` },
+  { label: 'LinkedIn', value: 'in/igorbencheci', href: SITE.linkedin },
+  { label: 'X', value: '@IgorBencheci', href: SITE.x },
+  ...(SITE.github ? [{ label: 'GitHub', value: SITE.github.replace('https://github.com/', '@'), href: SITE.github }] : []),
+];
+---
+<Base title="Contact" og="contact" pageType="ContactPage" description="Get in touch with Igor Bencheci about lead or senior engineering roles, contracts or collaborations.">
+  <div class="wrap article prose">
+    <p class="eyebrow">Contact</p>
+    <h1 class="fade-up"><Split text="Let's talk." /></h1>
+    <p class="lead" data-reveal>I'm open to lead or senior engineering roles and selected contract work. Email or LinkedIn reaches me fastest.</p>
+    <ul class="contact-links">
+      {links.map((l, i) => (
+        <li data-reveal style={`--d:${i}`}>
+          <a href={l.href} rel={l.label === 'Email' ? undefined : 'me noopener'}>
+            <span><span class="label">{l.label}</span><span class="value">{l.value}</span></span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

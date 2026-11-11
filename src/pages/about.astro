@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import Split from '../components/Split.astro';
+import { SITE } from '../site';
+
+/** Questions people (and AI search) ask about Igor. Visible on the page and mirrored as FAQPage data. */
+const faq = [
+  { q: 'Who is Igor Bencheci?', a: `${SITE.bio.short} ${SITE.bio.long[0].replace(/^Igor Bencheci is /, 'He is ')}` },
+  { q: 'What does Igor Bencheci do?', a: SITE.bio.long[1] },
+  { q: 'Where does Igor Bencheci work?', a: `Igor Bencheci is the Lead Developer at ${SITE.employer.name}, where he started in June 2019 as a Senior Web Developer and has led development since January 2022. He is based in ${SITE.location.label}.` },
+  { q: 'What technologies does Igor Bencheci work with?', a: SITE.bio.long[2] },
+  { q: 'How can I contact Igor Bencheci?', a: `Email ${SITE.email}, connect on LinkedIn at linkedin.com/in/igorbencheci, or follow @IgorBencheci on X. He is open to lead and senior engineering roles.` },
+];
+const schema = [
+  { '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+<Base title="About Igor, lead software engineer in Miami" og="about" description={SITE.bio.short} schema={schema} pageType="ProfilePage">
+  <div class="wrap article">
+    <div class="about-hero">
+      <div>
+      <p class="eyebrow">About Igor Bencheci</p>
+      <h1 class="fade-up" style="max-width:16ch"><Split text="I build products people use every day." /></h1>
+      <div class="prose" data-reveal>
+        <p class="lead">
+          I'm Igor, a lead software engineer. For the last seven years I've led product engineering for fintech and
+          financial-education brands at Venture Tech: Consolidated Credit (US and Canada), Debt.com, Debt.ca, KOFE and New Leaf.
+        </p>
+        <p class="muted">
+          That means a Flutter app in both stores, LLM agents and retrieval in production, secure payments in three
+          languages, and headless web platforms built for speed and search. Lately, AI agents do real engineering work
+          alongside me. I care about the parts users feel: speed, clarity and things that just work.
+        </p>
+      </div>
+        <ul class="socials" data-reveal>
+          <li><a href={SITE.linkedin} rel="me noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
+          <li><a href={SITE.x} rel="me noopener">X / @IgorBencheci <span aria-hidden="true">↗</span></a></li>
+          {SITE.github && <li><a href={SITE.github} rel="me noopener">GitHub <span aria-hidden="true">↗</span></a></li>}
+        </ul>
+      </div>
+      <figure class="portrait fade-up" style="--d:2">
+        <picture>
+          <source type="image/avif" srcset="/img/igor-bencheci-480.avif 480w, /img/igor-bencheci-800.avif 800w, /img/igor-bencheci-1200.avif 1200w" sizes="(max-width: 860px) 90vw, 420px" />
+          <source type="image/webp" srcset="/img/igor-bencheci-480.webp 480w, /img/igor-bencheci-800.webp 800w, /img/igor-bencheci-1200.webp 1200w" sizes="(max-width: 860px) 90vw, 420px" />
+          <img src="/img/igor-bencheci-800.jpg" width="800" height="1000" alt="Portrait of Igor Bencheci, lead software engineer" fetchpriority="high" decoding="async" />
+        </picture>
+        <figcaption><span class="dot" aria-hidden="true"></span>Igor Bencheci · {SITE.location.label}</figcaption>
+      </figure>
+    </div>
+
+    <section aria-labelledby="xp">
+      <div class="section-head" data-reveal><div><p class="eyebrow">Experience</p><h2 id="xp">The path so far</h2></div></div>
+      <ol class="timeline prose">
+        <li data-reveal>
+          <div class="meta">Jan 2022 – present</div>
+          <h3>Lead Developer · Venture Tech Solutions</h3>
+          <p>Mobile app, payments, the Strapi + Astro re-platform, site redesigns, the ad-spend data platform and AI tools. I lead a small team: kick-off, delegation and code review.</p>
+        </li>
+        <li data-reveal>
+          <div class="meta">Jun 2019 – Jan 2022</div>
+          <h3>Senior Web Developer · Venture Tech Solutions</h3>
+          <p>Horizon call-center dialer, the Expense / Partner portal, the 2021 Consolidated Credit redesign and React calculators.</p>
+        </li>
+        <li data-reveal>
+          <div class="meta">Feb 2016 – Jun 2019</div>
+          <h3>Web Developer · Razz Interactive</h3>
+          <p>Campaign sites and rewards platforms for Universal Music Latino (J Balvin), Mountain Dew and Sprint × Pokémon GO, including web AR and in-browser image recognition. Two Shorty Awards entries: a winner and a three-time finalist. <a href="/projects/#razz-interactive">See the earlier work</a>.</p>
+        </li>
+        <li data-reveal>
+          <div class="meta">2015 – 2025, alongside full-time roles</div>
+          <h3>Freelance Full-Stack Developer</h3>
+          <p>Co-founded Callisto Digital Studio (2022–2025): client websites, a Shopify theme and SEO audits. Before that, builds for Blue Raven Studios.</p>
+        </li>
+        <li data-reveal>
+          <div class="meta">2012 – 2014</div>
+          <h3>Web Developer · TenerLab, Moldova</h3>
+          <p>Where it started: responsive front-end builds from design files, with SEO and social integrations. MSc in Information Technology, Technical University of Moldova.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="tools">
+      <div class="section-head" data-reveal><div><p class="eyebrow">Toolbox</p><h2 id="tools">What I work with</h2></div></div>
+      <dl class="facts" data-reveal>
+        <div><dt>Mobile</dt><dd>Flutter, Dart, FlutterFlow, iOS and Android releases</dd></div>
+        <div><dt>AI &amp; agents</dt><dd>LLM integration, AI agents and agentic workflows, RAG, MCP, OpenAI, Gemini, Vertex AI</dd></div>
+        <div><dt>Front end</dt><dd>TypeScript, React, Next.js, Astro, motion and accessibility</dd></div>
+        <div><dt>Back end</dt><dd>Node.js, REST APIs, headless CMS (Strapi), PostgreSQL, Redis</dd></div>
+        <div><dt>Cloud &amp; edge</dt><dd>Google Cloud (Cloud Run, BigQuery, Pub/Sub), Cloudflare, Firebase</dd></div>
+        <div><dt>Speed &amp; visibility</dt><dd>Core Web Vitals, technical SEO, structured data, AI search visibility (GEO), GA4</dd></div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="faq">
+      <div class="section-head" data-reveal><div><p class="eyebrow">Quick answers</p><h2 id="faq">About Igor, in brief</h2></div></div>
+      <div class="faq" data-reveal>
+        {faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      </div>
+    </section>
+
+    <aside class="cta" data-reveal>
+      <h2>Want the full story?</h2>
+      <p class="lead">Happy to walk through any project in depth, architecture to trade-offs.</p>
+      <div class="actions"><a class="btn primary" href="/contact/">Get in touch <span class="arrow" aria-hidden="true">→</span></a></div>
+    </aside>
+  </div>
+</Base>

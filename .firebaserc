@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "wp-habit"
+  },
+  "targets": {
+    "wp-habit": {
+      "hosting": {
+        "site": ["igorbencheci-dev"]
+      }
+    }
+  }
+}

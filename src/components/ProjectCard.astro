@@ -1,0 +1,18 @@
+---
+/** Project tile with cursor spotlight; data-* attributes feed the filter on /projects/. */
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; index?: number; big?: boolean; }
+const { project, index = 0, big = false } = Astro.props;
+const d = project.data;
+const m = d.metrics[0];
+---
+<li class={big ? 'big' : undefined} data-category={d.category.join('|')} data-reveal style={`--d:${index % 3}`}>
+  <article class="card">
+    <span class="num">{String(index + 1).padStart(2, '0')} · {d.period} · {d.industry}</span>
+    <span class="go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <h3><a href={`/projects/${project.id}/`}>{d.title}</a></h3>
+    <p>{d.summary}</p>
+    {m && big && <div class="metric"><strong class="grad">{m.value}</strong><span>{m.label}</span></div>}
+    <ul class="tags" aria-label="Stack">{d.stack.slice(0, big ? 6 : 4).map((s) => <li>{s}</li>)}</ul>
+  </article>
+</li>

@@ -1,0 +1,43 @@
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+
+# Firebase local deploy cache and debug logs
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Env files and local-only config (never commit secrets)
+.env
+.env.*
+!.env.example
+*.local
+*.local.*
+!*.local.example.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Unpublished blog drafts stay local. Delete a line when that post goes live.
+src/content/blog/a-harness-not-a-prompt.mdx
+src/content/blog/browser-work-goes-to-a-subagent.mdx
+src/content/blog/lighthouse-as-a-lab.mdx
+src/content/blog/one-harness-three-agents.mdx
+src/content/blog/production-is-the-users.mdx
+src/content/blog/proving-a-migration-page-by-page.mdx
+src/content/blog/seo-after-the-replatform.mdx
+src/content/blog/wordpress-to-strapi-astro.mdx
+src/content/blog/wordpress-to-strapi-content-first.mdx
+src/content/blog/wordpress-to-strapi-every-url.mdx
+src/content/blog/wordpress-to-strapi-the-importer.mdx

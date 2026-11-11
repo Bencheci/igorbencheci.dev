@@ -1,0 +1,35 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Split from '../../components/Split.astro';
+import PreferredSource from '../../components/PreferredSource.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', (p) => !p.data.draft);
+  return posts.map((p) => ({ params: { slug: p.id }, props: { post: p } }));
+}
+const { post } = Astro.props;
+const d = post.data;
+const { Content } = await render(post);
+const words = post.body?.split(/\s+/).length ?? 0;
+const minutes = Math.max(1, Math.round(words / 230));
+const url = new URL(`/blog/${post.id}/`, Astro.site).toString();
+const schema = [{
+  '@type': 'BlogPosting', headline: d.title, description: d.description, url, mainEntityOfPage: url,
+  datePublished: d.pubDate.toISOString(), dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+  author: { '@id': `${Astro.site}#igor` }, keywords: d.tags.join(', '),
+  image: new URL(`/og/blog/${post.id}.png`, Astro.site).toString(),
+}];
+---
+<Base title={d.title} description={d.description} type="article" og={`blog/${post.id}`} schema={schema} publishedTime={d.pubDate}>
+  <div class="read-progress" aria-hidden="true"></div>
+  <article class="wrap article">
+    <p class="eyebrow"><time datetime={d.pubDate.toISOString()}>{d.pubDate.toLocaleDateString('en-US', { dateStyle: 'long', timeZone: 'UTC' })}</time> · {minutes} min read</p>
+    <h1 class="fade-up" style="max-width:20ch"><Split text={d.title} /></h1>
+    <p class="lead" data-reveal>{d.description}</p>
+    {d.tags.length > 0 && <ul class="tags" style="margin-top:1.5rem">{d.tags.map((t) => <li>{t}</li>)}</ul>}
+    <div class="body prose"><Content /></div>
+    <PreferredSource />
+    <a class="back" href="/blog/">← All posts</a>
+  </article>
+</Base>

@@ -1,0 +1,153 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Split from '../components/Split.astro';
+import { SITE } from '../site';
+import { AI } from '../data/ai';
+
+const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('blog', (p) => !p.data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+const stack = ['Flutter', 'React', 'TypeScript', 'Next.js', 'Node.js', 'OpenAI', 'Gemini', 'Vertex AI', 'AI agents', 'MCP', 'Astro', 'Google Cloud', 'Cloudflare', 'BigQuery'];
+const words = ['mobile apps', 'AI agents', 'payment flows', 'fast, findable web'];
+const scores = [['Performance', 100], ['Accessibility', 100], ['Best practices', 100], ['SEO', 100]] as const;
+---
+<Base pageType="ProfilePage" schema={[{ '@type': 'ItemList', name: 'Selected work by Igor Bencheci', itemListElement: featured.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/projects/${p.id}/`, Astro.site).toString(), name: p.data.title })) }]}>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="status"><span class="dot" aria-hidden="true"></span>Open to lead &amp; senior engineering roles</p>
+      <h1 id="hero-title" class="fade-up">
+        <Split text="Full-stack engineer who ships" />
+        <span class="rotator">
+          {words.map((w, i) => <span class={i === 0 ? 'grad on' : 'grad'} aria-hidden={i === 0 ? undefined : 'true'}>{w}</span>)}
+        </span>
+      </h1>
+      <p class="lead fade-up" style="--d:3">
+        I'm Igor, a lead software engineer with 13+ years of experience. I build mobile apps, AI agents and
+        high-performance web platforms for fintech, end to end: from the API to the app store to the edge.
+      </p>
+      <div class="actions fade-up" style="--d:5">
+        <a class="btn primary" href="/projects/">See the work <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href="/contact/">Let's talk</a>
+      </div>
+    </div>
+    <span class="scroll-cue" aria-hidden="true">Scroll</span>
+  </section>
+
+  <div class="wrap">
+    <ul class="stats" aria-label="Highlights" data-reveal>
+      <li><strong>iOS + Android</strong><span>Production fintech app with secure in-app payments, shipped to both stores</span></li>
+      <li><strong>AI in production</strong><span>LLM support agents, retrieval (RAG) and agentic engineering workflows</span></li>
+      <li><strong>100 / 100 / 100</strong><span>Lighthouse performance, accessibility and SEO on a large-scale headless platform</span></li>
+      <li><strong data-count="13" data-suffix="+">13+</strong><span>years building software, the last 7 in fintech</span></li>
+    </ul>
+  </div>
+
+  <section class="wrap" aria-labelledby="who-title">
+    <div class="who" data-reveal>
+      <p class="eyebrow">In a nutshell</p>
+      <h2 id="who-title">Who is Igor Bencheci?</h2>
+      <div class="prose who-body">
+        {SITE.bio.long.map((p) => <p>{p}</p>)}
+        <p><a class="link-arrow" href="/about/">More about Igor <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-label="Technologies I use">
+    <ul>{stack.map((s) => <li>{s}</li>)}</ul>
+    <ul aria-hidden="true">{stack.map((s) => <li>{s}</li>)}</ul>
+  </div>
+
+  <section class="wrap" aria-labelledby="work-title">
+    <div class="section-head" data-reveal>
+      <div><p class="eyebrow">Selected work</p><h2 id="work-title">Things in production</h2></div>
+      <a class="link-arrow" href="/projects/">All projects <span aria-hidden="true">→</span></a>
+    </div>
+    <ul class="grid">{featured.map((p, i) => <ProjectCard project={p} index={i} big={i === 0} />)}</ul>
+  </section>
+
+  <section class="wrap" aria-labelledby="ai-title">
+    <div class="ai" data-reveal>
+      <div class="ai-head">
+        <p class="eyebrow">AI, in practice</p>
+        <h2 id="ai-title">What I'm building with <span class="grad">AI</span></h2>
+        <p class="lead">{AI.intro}</p>
+        <div class="ai-now">
+          <span class="mono muted">Right now:</span>
+          <ul class="tags">{AI.now.map((n) => <li>{n}</li>)}</ul>
+        </div>
+      </div>
+      <ol class="ai-list">
+        {AI.milestones.map((m, i) => (
+          <li data-reveal style={`--d:${i}`}>
+            <div class="ai-meta"><span class="ai-year mono">{m.year}</span><span class="ai-tag mono">{m.tag}</span></div>
+            <h3>{m.title}</h3>
+            <p>{m.text}</p>
+            <ul class="tags">{m.stack.map((t) => <li>{t}</li>)}</ul>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="how-title">
+    <div class="section-head" data-reveal>
+      <div><p class="eyebrow">How I work</p><h2 id="how-title">Measure, ship, prove it</h2></div>
+    </div>
+    <ol class="steps">
+      <li data-reveal style="--d:0"><h3>Start from the numbers</h3><p>Core Web Vitals, conversion and error rates come first, so "better" has a definition before any code changes.</p></li>
+      <li data-reveal style="--d:1"><h3>Own the whole stack</h3><p>Mobile app, API, data and edge. Fewer hand-offs means fewer places for quality, speed and security to slip.</p></li>
+      <li data-reveal style="--d:2"><h3>Put agents to work</h3><p>Agentic workflows handle the repetitive work, like QA across every page of a migration, while people review and ship.</p></li>
+      <li data-reveal style="--d:3"><h3>Build to be found</h3><p>Structured data, Core Web Vitals and content that classic and AI search engines can understand and cite.</p></li>
+    </ol>
+  </section>
+
+  <section class="wrap" aria-labelledby="lh-title">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="eyebrow">Proof, not adjectives</p>
+        <h2 id="lh-title">This page scores <span class="grad">100</span> across the board</h2>
+        <p class="lead">Performance, accessibility, best practices and SEO, measured with Google Lighthouse. Speed is a feature, and it ships by default.</p>
+      </div>
+    </div>
+    <ul class="rings" data-reveal>
+      {scores.map(([label, v]) => (
+        <li class="ring">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="45" /><circle class="bar" cx="50" cy="50" r="45" /></svg>
+          <b>{v}</b>{label}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="wrap" aria-labelledby="blog-title">
+      <div class="section-head" data-reveal>
+        <div><p class="eyebrow">Writing</p><h2 id="blog-title">Notes from the work</h2></div>
+        <a class="link-arrow" href="/blog/">All posts <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="post-list" data-reveal>
+        {posts.map((p) => (
+          <li>
+            <time datetime={p.data.pubDate.toISOString()}>{p.data.pubDate.toLocaleDateString('en-US', { dateStyle: 'medium', timeZone: 'UTC' })}</time>
+            <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+            <p>{p.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <div class="wrap">
+    <aside class="cta" data-reveal>
+      <p class="eyebrow">Hiring?</p>
+      <h2>Let's build what's next.</h2>
+      <p class="lead">I'm looking for a lead or senior role building mobile, AI and high-performance web products.</p>
+      <div class="actions"><a class="btn primary" href="/contact/">Get in touch <span class="arrow" aria-hidden="true">→</span></a><a class="btn" href="/about/">About me</a></div>
+    </aside>
+  </div>
+
+</Base>

@@ -1,0 +1,57 @@
+---
+/** Printable resume page, generated from src/data/profile.ts. */
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site';
+import { PROFILE } from '../data/profile';
+const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
+const fmt = (d: string | null) => (d ? new Date(`${d}-01T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' }) : 'Present');
+---
+<Base title="Resume" og="about" pageType="ProfilePage" description={`Resume of ${SITE.name}: ${PROFILE.headline}. ${PROFILE.yearsExperience}+ years of experience.`}>
+  <div class="wrap article resume">
+    <header class="resume-head">
+      <div>
+        <p class="eyebrow">Resume</p>
+        <h1 class="fade-up">{SITE.name}</h1>
+        <p class="lead">{PROFILE.headline}</p>
+      </div>
+      <ul class="resume-contact">
+        <li>{SITE.location.label}</li>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li><a href={SITE.linkedin} rel="me">linkedin.com/in/igorbencheci</a></li>
+        <li><a href={SITE.x} rel="me">x.com/IgorBencheci</a></li>
+        <li><a href="/resume.json">resume.json</a> · <button type="button" class="print-btn" onclick="print()">Print / PDF</button></li>
+      </ul>
+    </header>
+
+    <section class="resume-sec"><h2>Summary</h2><div class="prose">{SITE.bio.long.map((p) => <p>{p}</p>)}</div></section>
+
+    <section class="resume-sec">
+      <h2>Experience</h2>
+      {PROFILE.experience.map((e) => (
+        <article class="job">
+          <div class="job-head"><h3>{e.title} · {e.org}</h3><span class="meta mono">{fmt(e.start)} – {fmt(e.end)}</span></div>
+          <p class="muted">{e.summary}</p>
+          {e.highlights.length > 0 && <ul>{e.highlights.map((h) => <li>{h}</li>)}</ul>}
+        </article>
+      ))}
+    </section>
+
+    <section class="resume-sec">
+      <h2>Education</h2>
+      <ul class="proj-list">{PROFILE.education.map((ed) => <li>{ed.studyType}, {ed.area} · {ed.institution}{ed.start && <span class="muted"> ({ed.start}–{ed.end})</span>}</li>)}</ul>
+    </section>
+
+    <section class="resume-sec">
+      <h2>Skills</h2>
+      <dl class="facts">{PROFILE.skills.map((s) => <div><dt>{s.name}</dt><dd>{s.keywords.join(', ')}</dd></div>)}</dl>
+    </section>
+
+    <section class="resume-sec">
+      <h2>Selected projects</h2>
+      <ul class="proj-list">{featured.map((p) => <li><a href={`/projects/${p.id}/`}>{p.data.title}</a> <span class="muted">({p.data.period})</span>: {p.data.summary}</li>)}</ul>
+    </section>
+
+    <section class="resume-sec"><h2>Looking for</h2><p>{PROFILE.seeking.roles.join(', ')}. {PROFILE.seeking.workplace}.</p></section>
+  </div>
+</Base>
