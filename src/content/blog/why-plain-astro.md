@@ -12,4 +12,7 @@ Content goes through Astro's content collections with a typed schema. Today the 
 the repo; if I ever want an admin UI, I can swap that one loader for one that reads from Strapi, and none of
 the pages change.
 
+The full source is public on GitHub at [Bencheci/igorbencheci.dev](https://github.com/Bencheci/igorbencheci.dev):
+the content schema, the generated share images, the structured data and the Firebase deploy scripts.
+
 Next up: case studies for each project, and a write-up of the WordPress → Strapi + Astro migration.
